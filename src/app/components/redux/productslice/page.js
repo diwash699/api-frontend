@@ -5,7 +5,6 @@ const productSlice = createSlice({
   initialState: {
     productName: '',
     productDescription: '',
-    increaseCount:0
   },
   reducers: {
     setProductName: (state, action) => {
@@ -18,12 +17,8 @@ const productSlice = createSlice({
       state.productName = '';
       state.productDescription = '';
     },
-    increaseCount:(state)=>{
-      console.log('íncrement')
-      state.count = state.count + 1
-    }
   },
 });
 
-export const { setProductName, setProductDescription, resetForm,increaseCount } = productSlice.actions;
+export const { setProductName, setProductDescription, resetForm } = productSlice.actions;
 export default productSlice.reducer;

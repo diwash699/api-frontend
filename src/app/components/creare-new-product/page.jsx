@@ -3,32 +3,48 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Box, Button, TextField, Typography } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { setProductName, setProductDescription, resetForm } from '../redux/productslice/page';
+import { useAddProductMutation, useUpdateProductMutation  } from '../redux/productslice/productService';
 
-const ProductForm = () => {
-  const dispatch = useDispatch();
-  const product = useSelector((state)=>state.product)
-  console.log(product)
+const ProductForm = ({onClose,initialValues = { productname: '', productdetails: '' }}) => {
+  const [createProduct] = useAddProductMutation(); 
+  const [updateProduct] = useUpdateProductMutation();
+
   const validationSchema = Yup.object({
-    productName: Yup.string().required(),
-    productDescription: Yup.string().required(),
+    productName: Yup.string().required("Product name is required"),
+    productDescription: Yup.string().required("Product description is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      productName: '',
-      productDescription: '',
+      productName: initialValues.productname || '',
+      productDescription: initialValues.productdetails || '',
     },
-    // validationSchema,
-    onSubmit: (values) => {
-      dispatch(setProductName(values.productName));
-      dispatch(setProductDescription(values.productDescription));
-      console.log(dispatch(setProductDescription(values.productDescription)));
-      dispatch(resetForm());
-      dispatch(increaseCount())
-    },
-  });
+    validationSchema,
+    onSubmit: async (values, { resetForm }) => {
+      try {
+          if (initialValues.productid) {
+              // Call the update mutation if productId exists
+              await updateProduct({
+                  productid: initialValues.productid,
+                  productname: values.productName,
+                  productdetails: values.productDescription,
+              });
+          } else {
+              // Otherwise, create a new product
+              await createProduct({
+                  productid: Math.floor(Math.random() * 50),
+                  productname: values.productName,
+                  productdetails: values.productDescription,
+              });
+          }
+          resetForm();
+          console.log('Product processed successfully');
+          onClose();
+      } catch (error) {
+          console.log(error?.message);
+      }
+  },
+});
 
   return (
     <Box
@@ -72,8 +88,9 @@ const ProductForm = () => {
 
 
       <Button color="primary" variant="contained" fullWidth type="submit">
-        Submit
+        {initialValues.productid ? 'Update' : 'Submit'}
       </Button>
+      
     </Box>
   );
 };

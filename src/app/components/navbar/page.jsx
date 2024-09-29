@@ -33,7 +33,7 @@ const Navbar = () => {
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>Add New Product</DialogTitle>
         <DialogContent>
-          <ProductForm />
+          <ProductForm onClose={handleClose}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

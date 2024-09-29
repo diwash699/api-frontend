@@ -12,4 +12,4 @@ const ReduxWrapper = ({children}) => {
   )
 }
 
-export default ReduxWrapper
+export default ReduxWrapper;
